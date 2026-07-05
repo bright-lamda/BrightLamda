@@ -1,0 +1,42 @@
+export const notifications = [
+  {
+    id: 'n1',
+    title: 'New teacher announcement',
+    body: 'Electricity practical revision has been scheduled for this evening.',
+    category: 'Announcements',
+    icon: 'bullhorn-outline',
+    unread: true,
+  },
+  {
+    id: 'n2',
+    title: 'Weekly quiz reminder',
+    body: 'Your mechanics challenge opens Friday at 6 PM.',
+    category: 'Quiz reminders',
+    icon: 'timer-outline',
+    unread: true,
+  },
+  {
+    id: 'n3',
+    title: 'Forum reply',
+    body: 'A teacher replied to your question about terminal velocity.',
+    category: 'Forum replies',
+    icon: 'forum-outline',
+    unread: false,
+  },
+  {
+    id: 'n4',
+    title: 'AI study suggestion',
+    body: 'Revise vector components before attempting the new practice set.',
+    category: 'AI notifications',
+    icon: 'auto-fix',
+    unread: false,
+  },
+  {
+    id: 'n5',
+    title: 'New content uploaded',
+    body: 'A practical Physics graphing guide is available in resources.',
+    category: 'New content uploads',
+    icon: 'cloud-upload-outline',
+    unread: false,
+  },
+];
