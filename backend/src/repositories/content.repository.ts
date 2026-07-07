@@ -14,17 +14,15 @@ interface CreateResourceInput {
 
 export const contentRepository = {
   createResource: async (input: CreateResourceInput, client?: PoolClient) => {
-    const executor = client ?? { query };
-    const result = await executor.query(
-      `
-        insert into content_items (
-          type, title, education_category, subject_id, author_id, status, paper_kind
-        )
-        values ($1, $2, $3, $4, $5, $6, $7)
-        returning *
-      `,
-      [input.type, input.name, input.educationCategory, input.subjectId, input.authorId, input.status, input.paperKind ?? null],
-    );
+    const sql = `
+      insert into content_items (
+        type, title, education_category, subject_id, author_id, status, paper_kind
+      )
+      values ($1, $2, $3, $4, $5, $6, $7)
+      returning *
+    `;
+    const params = [input.type, input.name, input.educationCategory, input.subjectId, input.authorId, input.status, input.paperKind ?? null];
+    const result = client ? await client.query(sql, params) : await query(sql, params);
     return result.rows[0];
   },
 

@@ -1,7 +1,7 @@
 import cors from 'cors';
 import express from 'express';
 import helmet from 'helmet';
-import pinoHttp from 'pino-http';
+import { pinoHttp } from 'pino-http';
 import { env } from './config/env.js';
 import { apiRouter } from './routes/index.js';
 import { errorHandler, notFound } from './middleware/errorHandler.js';
@@ -16,3 +16,4 @@ app.use(pinoHttp());
 app.use('/api/v1', apiRouter);
 app.use(notFound);
 app.use(errorHandler);
+
