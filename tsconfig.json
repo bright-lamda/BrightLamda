@@ -11,7 +11,35 @@
     }
   },
   "include": [
-    "**/*.ts",
-    "**/*.tsx"
+    "api/**/*.ts",
+    "app/**/*.ts",
+    "app/**/*.tsx",
+    "components/**/*.ts",
+    "components/**/*.tsx",
+    "constants/**/*.ts",
+    "context/**/*.ts",
+    "context/**/*.tsx",
+    "features/**/*.ts",
+    "features/**/*.tsx",
+    "hooks/**/*.ts",
+    "navigation/**/*.ts",
+    "navigation/**/*.tsx",
+    "providers/**/*.ts",
+    "providers/**/*.tsx",
+    "services/**/*.ts",
+    "store/**/*.ts",
+    "theme/**/*.ts",
+    "types/**/*.ts",
+    "utils/**/*.ts",
+    "index.ts",
+    "App.tsx"
+  ],
+  "exclude": [
+    "backend",
+    "supabase",
+    "node_modules",
+    ".expo",
+    "dist",
+    "web-build"
   ]
 }
