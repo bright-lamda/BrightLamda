@@ -22,9 +22,33 @@ cp .env.example .env
 npm run dev
 ```
 
+## Cloud Supabase Connection
+
+Bright Lamda uses the hosted Supabase project, not a local database by default. Keep the real values only in `backend/.env`:
+
+- `SUPABASE_URL`: Project URL from Supabase project settings.
+- `SUPABASE_SERVICE_ROLE_KEY`: Server-only service role key. Never expose this in the mobile app.
+- `DATABASE_URL`: Supabase Postgres pooler URL. Prefer the Session Pooler for the long-running Node API.
+- `DATABASE_POOL_MIN` / `DATABASE_POOL_MAX`: Backend connection-pool size.
+- `DATABASE_CONNECTION_TIMEOUT_MS`: How long the API waits before treating the database as unreachable.
+
+After filling `.env`, run the backend and verify both health endpoints:
+
+```bash
+npm run dev
+```
+
+```txt
+GET http://localhost:4000/api/v1/health
+GET http://localhost:4000/api/v1/health/database
+```
+
+The `/health/database` endpoint performs a real query through `pg.Pool`, so if it succeeds the backend is connected to Supabase Postgres.
+
 ## Main API Groups
 
 - `GET /api/v1/health`
+- `GET /api/v1/health/database`
 - `POST /api/v1/content/pdf-resources`
 - `POST /api/v1/content/publications`
 - `POST /api/v1/content/quiz-questions`

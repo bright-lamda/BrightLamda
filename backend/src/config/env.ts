@@ -12,6 +12,7 @@ const envSchema = z.object({
   DATABASE_POOL_MIN: z.coerce.number().default(2),
   DATABASE_POOL_MAX: z.coerce.number().default(10),
   DATABASE_IDLE_TIMEOUT_MS: z.coerce.number().default(30000),
+  DATABASE_CONNECTION_TIMEOUT_MS: z.coerce.number().default(10000),
   JWT_SECRET: z.string().min(32),
   AI_PROVIDER: z.enum(['groq', 'gemini', 'mock']).default('mock'),
   GROQ_API_KEY: z.string().optional(),
@@ -22,3 +23,4 @@ const envSchema = z.object({
 });
 
 export const env = envSchema.parse(process.env);
+

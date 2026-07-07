@@ -6,6 +6,7 @@ export const pool = new pg.Pool({
   min: env.DATABASE_POOL_MIN,
   max: env.DATABASE_POOL_MAX,
   idleTimeoutMillis: env.DATABASE_IDLE_TIMEOUT_MS,
+  connectionTimeoutMillis: env.DATABASE_CONNECTION_TIMEOUT_MS,
   ssl: env.NODE_ENV === 'production' ? { rejectUnauthorized: true } : { rejectUnauthorized: false },
   application_name: 'bright-lamda-api',
 });
@@ -16,3 +17,10 @@ pool.on('error', (error) => {
 
 export const query = <T extends QueryResultRow = QueryResultRow>(text: string, params: unknown[] = []) => pool.query<T>(text, params);
 
+export const getPoolStats = () => ({
+  total: pool.totalCount,
+  idle: pool.idleCount,
+  waiting: pool.waitingCount,
+  min: env.DATABASE_POOL_MIN,
+  max: env.DATABASE_POOL_MAX,
+});
