@@ -1,7 +1,6 @@
-# Learn more https://docs.github.com/en/get-started/getting-started-with-git/ignoring-files
-
 # dependencies
 node_modules/
+jspm_packages/
 
 # Expo
 .expo/
@@ -17,26 +16,79 @@ expo-env.d.ts
 *.p12
 *.key
 *.mobileprovision
+/ios
+/android
 
 # Metro
 .metro-health-check*
 
-# debug
+# logs and diagnostics
+logs
+*.log
 npm-debug.*
+npm-debug.log*
 yarn-debug.*
+yarn-debug.log*
 yarn-error.*
+yarn-error.log*
+lerna-debug.log*
 expo-server*.log
+report.[0-9]*.[0-9]*.[0-9]*.[0-9]*.json
+
+# runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# coverage and build artifacts
+coverage
+*.lcov
+.nyc_output
+lib-cov
+build/Release
+*.tgz
+
+# tool caches
+.cache
+.parcel-cache
+.eslintcache
+.stylelintcache
+.npm
+.pnpm-store
+.vite/
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
+
+# framework output
+.next
+out
+.nuxt
+.output
+.temp
+.svelte-kit/
+.docusaurus
+.serverless/
+.firebase/
+
+# yarn v3
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/sdks
+!.yarn/versions
+
+# local env files
+.env
+.env.*
+!.env.example
+!backend/.env.example
+
+# TypeScript
+*.tsbuildinfo
 
 # macOS
 .DS_Store
 *.pem
-
-# local env files
-.env*.local
-
-# typescript
-*.tsbuildinfo
-
-# generated native folders
-/ios
-/android
