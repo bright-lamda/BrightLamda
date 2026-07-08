@@ -98,6 +98,35 @@ Example request body:
 }
 ```
 
+## Content Publishing Workflow
+
+Teacher admins and system admins create content through the backend. Teacher-admin submissions enter `pending_review`; system-admin submissions are approved immediately.
+
+PDF resources can attach a file that was uploaded through the signed upload flow:
+
+```json
+{
+  "type": "paper",
+  "name": "GCE 2025 Physics Paper 1",
+  "educationCategory": "ordinary_physics",
+  "subjectId": "00000000-0000-0000-0000-000000000000",
+  "paperKind": "paper_1",
+  "file": {
+    "storageBucket": "papers",
+    "storagePath": "papers/admin-id/file.pdf",
+    "mimeType": "application/pdf",
+    "sizeBytes": 204800
+  }
+}
+```
+
+System admins review teacher content through:
+
+- `GET /api/v1/admin/pending-content`
+- `POST /api/v1/admin/content/:id/approve`
+- `POST /api/v1/admin/content/:id/reject`
+
+Rejections require a reason and all create/review actions are written to `admin_audit_logs`.
 ## Main API Groups
 
 - `GET /api/v1/health`
@@ -127,3 +156,4 @@ This backend is intentionally scaffolded with real production boundaries, but pr
 - Groq/Gemini provider calls
 - Full audit logging
 - Rate limiting
+

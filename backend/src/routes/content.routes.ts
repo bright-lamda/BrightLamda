@@ -21,6 +21,7 @@ contentRouter.post(
       authorId: req.user!.id,
       authorRole: req.user!.role,
       paperKind: req.body.paperKind,
+      file: req.body.file,
     });
     res.status(201).json({ item });
   },
@@ -32,7 +33,18 @@ contentRouter.post(
   requireRole('teacher_admin', 'system_admin'),
   validateBody(createPublicationSchema),
   async (req, res) => {
-    res.status(201).json({ item: req.body, status: req.user!.role === 'teacher_admin' ? 'pending_review' : 'approved' });
+    const item = await contentService.createPublication({
+      type: req.body.type,
+      title: req.body.title,
+      content: req.body.content,
+      imageUrl: req.body.imageUrl,
+      imageFile: req.body.imageFile,
+      visibleInForum: req.body.visibleInForum,
+      authorId: req.user!.id,
+      authorRole: req.user!.role,
+    });
+
+    res.status(201).json({ item });
   },
 );
 
