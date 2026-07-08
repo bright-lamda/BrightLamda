@@ -6,6 +6,10 @@ export type PaperKind = 'paper_1' | 'paper_2' | 'paper_3';
 
 export interface AuthUser {
   id: string;
+  authUserId: string;
   role: AppRole;
   email: string;
+  fullName: string;
+  educationCategory?: EducationCategory | null;
+  avatarUrl?: string | null;
 }

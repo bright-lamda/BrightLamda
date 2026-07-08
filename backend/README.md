@@ -7,11 +7,12 @@ Production-oriented Node.js backend scaffold for Bright Lamda.
 - Node.js
 - Express
 - TypeScript
+- Supabase Auth
 - Supabase Postgres
 - Supabase Storage
 - `pg.Pool` for database pooling
 - Zod validation
-- JWT auth middleware
+- Role-based backend authorization
 
 ## Setup
 
@@ -45,6 +46,31 @@ GET http://localhost:4000/api/v1/health/database
 
 The `/health/database` endpoint performs a real query through `pg.Pool`, so if it succeeds the backend is connected to Supabase Postgres.
 
+## Authentication Workflow
+
+Clients authenticate with Supabase Auth, then send the Supabase access token to this backend:
+
+```txt
+Authorization: Bearer <supabase-access-token>
+```
+
+The backend verifies the token with Supabase, then resolves the Bright Lamda `profiles` row to determine the user role and profile id used by content, forum, AI, and admin tables.
+
+Profile endpoints:
+
+- `GET /api/v1/auth/me`: Returns the resolved Bright Lamda user profile for a valid Supabase token.
+- `POST /api/v1/auth/profile`: Creates or updates the student profile after Supabase signup.
+
+Example profile body:
+
+```json
+{
+  "fullName": "Student Name",
+  "whatsappNumber": "+237600000000",
+  "educationCategory": "ordinary_physics"
+}
+```
+
 ## Storage Upload Workflow
 
 The API creates signed Supabase Storage upload URLs for trusted admin users. The client uploads directly to Supabase with the returned URL, while the backend controls bucket selection, path naming, MIME type validation, and role access.
@@ -76,6 +102,8 @@ Example request body:
 
 - `GET /api/v1/health`
 - `GET /api/v1/health/database`
+- `GET /api/v1/auth/me`
+- `POST /api/v1/auth/profile`
 - `POST /api/v1/storage/signed-upload-url`
 - `POST /api/v1/content/pdf-resources`
 - `POST /api/v1/content/publications`
@@ -92,11 +120,10 @@ Example request body:
 
 This backend is intentionally scaffolded with real production boundaries, but provider-specific details still need implementation:
 
-- Supabase Auth token verification
+- Admin invitation acceptance flow
 - Linking uploaded files to approved content records
 - PDF text extraction
 - Embedding generation
 - Groq/Gemini provider calls
 - Full audit logging
 - Rate limiting
-

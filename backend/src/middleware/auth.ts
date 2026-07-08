@@ -1,7 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
-import jwt from 'jsonwebtoken';
-import { env } from '../config/env.js';
 import { AuthUser } from '../domain/types.js';
+import { authService, extractBearerToken } from '../services/auth.service.js';
 
 declare module 'express-serve-static-core' {
   interface Request {
@@ -9,18 +8,17 @@ declare module 'express-serve-static-core' {
   }
 }
 
-export const authenticate = (req: Request, res: Response, next: NextFunction) => {
-  const header = req.headers.authorization;
-  const token = header?.startsWith('Bearer ') ? header.slice(7) : undefined;
+export const authenticate = async (req: Request, res: Response, next: NextFunction) => {
+  const token = extractBearerToken(req.headers.authorization);
 
   if (!token) {
     return res.status(401).json({ message: 'Authentication required' });
   }
 
   try {
-    req.user = jwt.verify(token, env.JWT_SECRET) as AuthUser;
+    req.user = await authService.resolveProfile(token);
     return next();
-  } catch {
-    return res.status(401).json({ message: 'Invalid or expired token' });
+  } catch (error) {
+    return next(error);
   }
 };
