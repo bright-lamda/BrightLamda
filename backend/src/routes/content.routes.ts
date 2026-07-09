@@ -2,7 +2,7 @@ import { Router } from 'express';
 import { authenticate } from '../middleware/auth.js';
 import { requireRole } from '../middleware/requireRole.js';
 import { validateBody } from '../middleware/validate.js';
-import { createPdfResourceSchema, createPublicationSchema, createQuizQuestionSchema } from '../schemas/content.schema.js';
+import { createPdfResourceSchema, createPublicationSchema } from '../schemas/content.schema.js';
 import { contentService } from '../services/content.service.js';
 
 export const contentRouter = Router();
@@ -48,12 +48,4 @@ contentRouter.post(
   },
 );
 
-contentRouter.post(
-  '/quiz-questions',
-  authenticate,
-  requireRole('teacher_admin', 'system_admin'),
-  validateBody(createQuizQuestionSchema),
-  async (req, res) => {
-    res.status(201).json({ question: req.body });
-  },
-);
+

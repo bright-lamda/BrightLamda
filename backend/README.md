@@ -127,6 +127,37 @@ System admins review teacher content through:
 - `POST /api/v1/admin/content/:id/reject`
 
 Rejections require a reason and all create/review actions are written to `admin_audit_logs`.
+## Quiz Workflow
+
+Admins create quizzes as drafts, add questions, then publish them when ready. Students only see published quizzes inside the active schedule window.
+
+Admin endpoints:
+
+- `GET /api/v1/quizzes/admin`
+- `POST /api/v1/quizzes`
+- `POST /api/v1/quizzes/:id/questions`
+- `POST /api/v1/quizzes/:id/publish`
+- `POST /api/v1/quizzes/:id/archive`
+
+Student endpoints:
+
+- `GET /api/v1/quizzes`
+- `GET /api/v1/quizzes/:id`
+- `POST /api/v1/quizzes/:id/attempts`
+
+Example quiz body:
+
+```json
+{
+  "title": "Weekly Physics Quiz",
+  "mode": "weekly",
+  "educationCategory": "ordinary_physics",
+  "durationMinutes": 30,
+  "instructions": "Choose the best answer for each question."
+}
+```
+
+Attempts are graded by the backend, and responses include the correct answer plus explanation after submission.
 ## Main API Groups
 
 - `GET /api/v1/health`
@@ -156,4 +187,5 @@ This backend is intentionally scaffolded with real production boundaries, but pr
 - Groq/Gemini provider calls
 - Full audit logging
 - Rate limiting
+
 
