@@ -6,12 +6,21 @@ This folder contains the database workflow for the production Bright Lamda platf
 
 Do not manually maintain production schema from the Supabase dashboard. Schema changes should be written in VS Code as migrations, reviewed, committed, and applied with the Supabase CLI.
 
-## First-Time Setup
+For credential setup, read [`docs/cloud-supabase-setup.md`](../docs/cloud-supabase-setup.md).
+
+## First-Time Cloud Setup
 
 ```bash
 npm install -g supabase
 supabase login
 supabase link --project-ref <project-ref>
+```
+
+You can also use the root scripts:
+
+```bash
+npm run supabase:link -- --project-ref <project-ref>
+npm run supabase:db:push
 ```
 
 ## Create a Migration From VS Code
@@ -55,6 +64,10 @@ The Express backend uses `pg.Pool`, so writes made by backend services are commi
 
 - `0001_bright_lamda_core.sql`: core app tables, enums, base indexes, base RLS, Physics category seed.
 - `0002_bright_lamda_database_hardening.sql`: RLS helpers, settings, progress, subscriptions, achievements, storage buckets, audit logs, AI ingestion, stricter policies.
+- `0003_content_file_storage_bucket.sql`: bucket-aware content file metadata.
+- `0004_quiz_publication_workflow.sql`: quiz draft/publish/archive flow and safer quiz RLS.
+- `0005_community_notifications.sql`: notification sender identity, reason fields, and community indexes.
+- `0006_bright_ai_workflow.sql`: Bright AI conversation/message/ingestion indexes.
 
 ## Storage Buckets
 
