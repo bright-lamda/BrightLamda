@@ -158,6 +158,26 @@ Example quiz body:
 ```
 
 Attempts are graded by the backend, and responses include the correct answer plus explanation after submission.
+## Community And Notifications
+
+Forum posts power the student community feed. Posts include author role metadata so the app can show teacher admin verification in green and system admin verification in orange.
+
+Forum endpoints:
+
+- `GET /api/v1/notifications`
+- `POST /api/v1/notifications`
+- `GET /api/v1/forum/posts`
+- `POST /api/v1/forum/posts`
+
+Notifications support announcements, quiz reminders, forum replies, Bright AI messages, content uploads, competitions, opportunities, and system messages.
+
+Notification endpoints:
+
+- `GET /api/v1/notifications`
+- `POST /api/v1/notifications`
+- `POST /api/v1/notifications/:id/read`
+
+Admin-created notifications can target a single student or an audience such as `all_students`, `ordinary_physics`, `advanced_physics`, or `competitive_physics`.
 ## Main API Groups
 
 - `GET /api/v1/health`
@@ -173,6 +193,8 @@ Attempts are graded by the backend, and responses include the correct answer plu
 - `POST /api/v1/admin/content/:id/reject`
 - `POST /api/v1/admin/accounts`
 - `POST /api/v1/ai/ask`
+- `GET /api/v1/notifications`
+- `POST /api/v1/notifications`
 - `GET /api/v1/forum/posts`
 - `POST /api/v1/forum/posts`
 
@@ -187,5 +209,6 @@ This backend is intentionally scaffolded with real production boundaries, but pr
 - Groq/Gemini provider calls
 - Full audit logging
 - Rate limiting
+
 
 
