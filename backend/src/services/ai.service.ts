@@ -1,28 +1,70 @@
-import { query } from '../db/pool.js';
-import { env } from '../config/env.js';
+import { AppRole } from '../domain/types.js';
+import { aiRepository } from '../repositories/ai.repository.js';
+import { aiProviderService } from './aiProvider.service.js';
+import { HttpError } from '../utils/httpError.js';
+
+const titleFromQuestion = (question: string) => {
+  const trimmed = question.trim();
+  return trimmed.length > 60 ? `${trimmed.slice(0, 57)}...` : trimmed;
+};
+
+const ensureAdmin = (role: AppRole) => {
+  if (role !== 'teacher_admin' && role !== 'system_admin') {
+    throw new HttpError(403, 'Only admins can queue AI ingestion jobs', 'ai_ingestion_admin_required');
+  }
+};
 
 export const aiService = {
-  askBrightAi: async (input: { studentId: string; question: string }) => {
-    const context = await query(
-      `
-        select content
-        from ai_chunks
-        order by created_at desc
-        limit 6
-      `,
-    );
+  async askBrightAi(input: { studentId: string; question: string; conversationId?: string }) {
+    const conversation = input.conversationId
+      ? await aiRepository.getConversationForStudent({ conversationId: input.conversationId, studentId: input.studentId })
+      : await aiRepository.createConversation({ studentId: input.studentId, title: titleFromQuestion(input.question) });
 
-    if (env.AI_PROVIDER === 'mock') {
-      return {
-        answer:
-          'Bright AI is connected to the retrieval pipeline. Add notes, generate embeddings, then swap the mock provider for Groq or Gemini.',
-        context: context.rows,
-      };
+    if (!conversation) {
+      throw new HttpError(404, 'AI conversation not found', 'ai_conversation_not_found');
     }
 
+    await aiRepository.createMessage({ conversationId: conversation.id, role: 'user', content: input.question });
+
+    const context = await aiRepository.searchContext(input.question);
+    const citations = context.map((chunk) => ({
+      chunkId: chunk.id,
+      title: chunk.documentTitle,
+      sourcePath: chunk.sourcePath,
+    }));
+
+    const answer = await aiProviderService.generateAnswer({ question: input.question, context });
+    const assistantMessage = await aiRepository.createMessage({
+      conversationId: conversation.id,
+      role: 'assistant',
+      content: answer,
+      citations,
+    });
+
     return {
-      answer: 'Provider call placeholder. Implement Groq or Gemini client here using the retrieved context.',
-      context: context.rows,
+      conversationId: conversation.id,
+      answer,
+      message: assistantMessage,
+      citations,
     };
+  },
+
+  listConversations(studentId: string) {
+    return aiRepository.listConversations(studentId);
+  },
+
+  async listMessages(input: { conversationId: string; studentId: string }) {
+    const messages = await aiRepository.listMessages(input);
+
+    if (!messages) {
+      throw new HttpError(404, 'AI conversation not found', 'ai_conversation_not_found');
+    }
+
+    return messages;
+  },
+
+  createIngestionJob(input: { contentItemId: string; actorRole: AppRole }) {
+    ensureAdmin(input.actorRole);
+    return aiRepository.createIngestionJob({ contentItemId: input.contentItemId });
   },
 };

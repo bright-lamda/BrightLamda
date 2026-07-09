@@ -178,6 +178,29 @@ Notification endpoints:
 - `POST /api/v1/notifications/:id/read`
 
 Admin-created notifications can target a single student or an audience such as `all_students`, `ordinary_physics`, `advanced_physics`, or `competitive_physics`.
+## Bright AI Workflow
+
+Bright AI uses a retrieval-first architecture. Uploaded and approved learning resources are queued for ingestion, extracted into `ai_documents` and `ai_chunks`, then used as context when students ask questions.
+
+Student endpoints:
+
+- `GET /api/v1/ai/conversations`
+- `GET /api/v1/ai/conversations/:id/messages`
+- `GET /api/v1/ai/conversations`
+- `POST /api/v1/ai/ask`
+- `POST /api/v1/ai/ingestion-jobs`
+
+Admin ingestion endpoint:
+
+- `POST /api/v1/ai/ingestion-jobs`
+
+Provider mode is controlled by `AI_PROVIDER`:
+
+- `mock`: local placeholder, no external API key needed
+- `groq`: OpenAI-compatible Groq chat completions using `GROQ_API_KEY`
+- `gemini`: Gemini generateContent using `GEMINI_API_KEY`
+
+The next production step is a worker process that reads queued ingestion jobs, downloads PDFs/videos from Supabase Storage, extracts text/transcripts, chunks the material, generates embeddings, and stores them in `ai_chunks`.
 ## Main API Groups
 
 - `GET /api/v1/health`
@@ -192,7 +215,9 @@ Admin-created notifications can target a single student or an audience such as `
 - `POST /api/v1/admin/content/:id/approve`
 - `POST /api/v1/admin/content/:id/reject`
 - `POST /api/v1/admin/accounts`
+- `GET /api/v1/ai/conversations`
 - `POST /api/v1/ai/ask`
+- `POST /api/v1/ai/ingestion-jobs`
 - `GET /api/v1/notifications`
 - `POST /api/v1/notifications`
 - `GET /api/v1/forum/posts`
@@ -209,6 +234,7 @@ This backend is intentionally scaffolded with real production boundaries, but pr
 - Groq/Gemini provider calls
 - Full audit logging
 - Rate limiting
+
 
 
 
