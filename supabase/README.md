@@ -20,6 +20,8 @@ You can also use the root scripts:
 
 ```bash
 npm run supabase:link -- --project-ref <project-ref>
+npm run db:migrate
+npm run db:verify
 npm run supabase:db:push
 ```
 
@@ -81,3 +83,4 @@ The hardening migration creates these buckets:
 - `paper-3-videos`
 
 Metadata belongs in Postgres tables. Files belong in Supabase Storage.
+

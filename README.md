@@ -50,10 +50,13 @@ npm run typecheck
 npm run backend:dev
 npm run backend:typecheck
 npm run backend:worker:ai-ingestion
+npm run db:migrate
+npm run db:verify
 npm run supabase:db:push
 ```
 
 ## Safety
 
 Never commit real `.env` files, database passwords, Supabase secret/service-role keys, or AI provider keys.
+
 

@@ -44,9 +44,13 @@
     "backend:dev": "npm --prefix backend run dev",
     "backend:typecheck": "npm --prefix backend run typecheck",
     "backend:worker:ai-ingestion": "npm --prefix backend run worker:ai-ingestion",
+    "db:migrate": "npm --prefix backend run db:migrate",
+    "db:verify": "npm --prefix backend run db:verify",
     "supabase:link": "supabase link",
     "supabase:db:push": "supabase db push",
     "supabase:db:reset": "supabase db reset"
   },
   "private": true
 }
+
+
