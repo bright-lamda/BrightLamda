@@ -46,11 +46,13 @@
     "backend:worker:ai-ingestion": "npm --prefix backend run worker:ai-ingestion",
     "db:migrate": "npm --prefix backend run db:migrate",
     "db:verify": "npm --prefix backend run db:verify",
+    "bootstrap:system-admin": "npm --prefix backend run bootstrap:system-admin",
     "supabase:link": "supabase link",
     "supabase:db:push": "supabase db push",
     "supabase:db:reset": "supabase db reset"
   },
   "private": true
 }
+
 
 
