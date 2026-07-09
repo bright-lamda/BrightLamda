@@ -1,11 +1,39 @@
-import { QueryResultRow } from 'pg';
+import { PoolClient, QueryResultRow } from 'pg';
 import { query } from '../db/pool.js';
+
+type DbExecutor = Pick<PoolClient, 'query'>;
 
 export type AiContextChunk = {
   id: string;
   content: string;
   documentTitle: string;
   sourcePath: string | null;
+};
+
+export type AiIngestionJob = QueryResultRow & {
+  id: string;
+  content_item_id: string;
+  status: 'queued' | 'extracting' | 'embedding' | 'completed' | 'failed';
+  error_message: string | null;
+};
+
+export type IngestibleContent = QueryResultRow & {
+  id: string;
+  type: string;
+  title: string;
+  body: string | null;
+  status: string;
+  files: Array<{
+    id: string;
+    storage_bucket: string;
+    storage_path: string;
+    mime_type: string;
+    size_bytes: number | null;
+  }>;
+};
+
+const runQuery = <T extends QueryResultRow = QueryResultRow>(executor: DbExecutor | undefined, text: string, params: unknown[] = []) => {
+  return executor ? executor.query<T>(text, params) : query<T>(text, params);
 };
 
 export const aiRepository = {
@@ -124,5 +152,85 @@ export const aiRepository = {
     );
 
     return result.rows[0];
+  },
+
+  async claimQueuedIngestionJobs(limit: number) {
+    const result = await query<AiIngestionJob>(
+      `
+        with claimed as (
+          select id
+          from ai_ingestion_jobs
+          where status = 'queued'
+          order by created_at asc
+          limit $1
+          for update skip locked
+        )
+        update ai_ingestion_jobs jobs
+        set status = 'extracting', error_message = null, updated_at = now()
+        from claimed
+        where jobs.id = claimed.id
+        returning jobs.*
+      `,
+      [limit],
+    );
+
+    return result.rows;
+  },
+
+  async updateIngestionJob(input: { jobId: string; status: AiIngestionJob['status']; errorMessage?: string | null }) {
+    const result = await query<AiIngestionJob>(
+      `
+        update ai_ingestion_jobs
+        set status = $1, error_message = $2, updated_at = now()
+        where id = $3
+        returning *
+      `,
+      [input.status, input.errorMessage ?? null, input.jobId],
+    );
+
+    return result.rows[0];
+  },
+
+  async getIngestibleContent(contentItemId: string) {
+    const result = await query<IngestibleContent>(
+      `
+        select
+          ci.id,
+          ci.type,
+          ci.title,
+          ci.body,
+          ci.status,
+          coalesce(json_agg(cf.*) filter (where cf.id is not null), '[]') as files
+        from content_items ci
+        left join content_files cf on cf.content_item_id = ci.id
+        where ci.id = $1
+        group by ci.id
+        limit 1
+      `,
+      [contentItemId],
+    );
+
+    return result.rows[0] ?? null;
+  },
+
+  async replaceDocumentChunks(input: { contentItemId: string; title: string; sourcePath?: string | null; chunks: string[] }) {
+    return query(
+      `
+        with deleted as (
+          delete from ai_documents
+          where content_item_id = $1
+        ), inserted_document as (
+          insert into ai_documents (content_item_id, title, source_path)
+          values ($1, $2, $3)
+          returning id
+        )
+        insert into ai_chunks (document_id, content, token_count)
+        select inserted_document.id, chunk.content, chunk.token_count
+        from inserted_document,
+        unnest($4::text[], $5::int[]) as chunk(content, token_count)
+        returning *
+      `,
+      [input.contentItemId, input.title, input.sourcePath ?? null, input.chunks, input.chunks.map((chunk) => chunk.split(/\s+/).filter(Boolean).length)],
+    );
   },
 };

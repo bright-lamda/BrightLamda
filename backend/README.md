@@ -200,7 +200,13 @@ Provider mode is controlled by `AI_PROVIDER`:
 - `groq`: OpenAI-compatible Groq chat completions using `GROQ_API_KEY`
 - `gemini`: Gemini generateContent using `GEMINI_API_KEY`
 
-The next production step is a worker process that reads queued ingestion jobs, downloads PDFs/videos from Supabase Storage, extracts text/transcripts, chunks the material, generates embeddings, and stores them in `ai_chunks`.
+Run the ingestion worker with:
+
+```bash
+npm run worker:ai-ingestion
+```
+
+The worker claims queued jobs, extracts approved text content, chunks it, stores `ai_documents` and `ai_chunks`, then marks jobs completed. PDF and video extraction are explicit plug-in points: those jobs fail with clear extractor-not-implemented messages until a PDF parser/transcription service is connected.
 ## Main API Groups
 
 - `GET /api/v1/health`
@@ -234,6 +240,7 @@ This backend is intentionally scaffolded with real production boundaries, but pr
 - Groq/Gemini provider calls
 - Full audit logging
 - Rate limiting
+
 
 
 

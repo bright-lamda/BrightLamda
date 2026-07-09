@@ -19,8 +19,10 @@ const envSchema = z.object({
   GEMINI_API_KEY: z.string().optional(),
   GEMINI_MODEL: z.string().default('gemini-2.5-flash'),
   EMBEDDING_PROVIDER: z.enum(['supabase', 'external']).default('supabase'),
+  AI_INGESTION_BATCH_SIZE: z.coerce.number().int().positive().max(50).default(5),
 });
 
 export const env = envSchema.parse(process.env);
+
 
 
