@@ -39,6 +39,9 @@ Read the cloud setup guide before filling credentials:
 docs/cloud-supabase-setup.md
 ```
 
+## Mobile Auth
+
+The Expo app uses Supabase Auth for sign up/sign in. After Supabase returns an access token, the app calls the backend `/api/v1/auth/profile` or `/api/v1/auth/me` endpoint so Bright Lamda can resolve the student profile, education category, and role from Postgres.
 ## Common Commands
 
 ```bash
@@ -53,3 +56,4 @@ npm run supabase:db:push
 ## Safety
 
 Never commit real `.env` files, database passwords, Supabase secret/service-role keys, or AI provider keys.
+

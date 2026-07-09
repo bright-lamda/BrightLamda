@@ -112,6 +112,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         await updateUser({ ...state.user, subjects: selectedSubjects });
       },
       logout: async () => {
+        await authService.logout();
         setAuthToken(undefined);
         await storage.remove(AUTH_KEY);
         dispatch({ type: 'logout' });
@@ -123,3 +124,4 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
+
