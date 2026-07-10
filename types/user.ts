@@ -1,4 +1,4 @@
-import { LearningCategoryId, StudentLevel } from './auth';
+import { AppRole, LearningCategoryId, StudentLevel } from './auth';
 
 export interface Subject {
   id: string;
@@ -16,6 +16,7 @@ export interface StudentProfile {
   level: StudentLevel;
   currentCategory: LearningCategoryId;
   subjects: Subject[];
+  role?: AppRole;
   avatarUrl?: string;
   school?: string;
   region?: string;

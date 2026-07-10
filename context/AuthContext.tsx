@@ -1,7 +1,7 @@
 import { createContext, PropsWithChildren, useCallback, useEffect, useMemo, useReducer } from 'react';
 import { router } from 'expo-router';
 import { authService } from '@/services/authService';
-import { LoginCredentials, RegisterPayload, AuthSession } from '@/types/auth';
+import { AppRole, LoginCredentials, RegisterPayload, AuthSession } from '@/types/auth';
 import { StudentProfile, Subject } from '@/types/user';
 import { storage } from '@/utils/storage';
 import { setAuthToken } from '@/api/client';
@@ -28,6 +28,7 @@ type AuthAction =
 
 interface AuthContextValue extends AuthState {
   login: (payload: LoginCredentials) => Promise<void>;
+  loginAdmin: (payload: LoginCredentials, expectedRole: Extract<AppRole, 'teacher_admin' | 'system_admin'>) => Promise<void>;
   register: (payload: RegisterPayload) => Promise<void>;
   completeProfile: (payload: Partial<StudentProfile>) => Promise<void>;
   selectSubjects: (subjects: Subject[]) => Promise<void>;
@@ -99,6 +100,10 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         const result = await authService.login(payload);
         await persistAuth(result);
       },
+      loginAdmin: async (payload, expectedRole) => {
+        const result = await authService.loginAdmin(payload, expectedRole);
+        await persistAuth(result);
+      },
       register: async (payload) => {
         const result = await authService.register(payload);
         await persistAuth(result);
@@ -124,4 +129,5 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
+
 

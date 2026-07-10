@@ -16,6 +16,7 @@ import { supportContacts } from '@/constants/support';
 export default function RegisterScreen() {
   const auth = useAuth();
   const [adminPromptVisible, setAdminPromptVisible] = useState(false);
+  const [submitError, setSubmitError] = useState('');
   const { control, handleSubmit, formState } = useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -29,8 +30,13 @@ export default function RegisterScreen() {
   });
 
   const onSubmit = handleSubmit(async (data) => {
-    await auth.register(data);
-    setAdminPromptVisible(true);
+    try {
+      setSubmitError('');
+      await auth.register(data);
+      setAdminPromptVisible(true);
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : 'Unable to create account.');
+    }
   });
 
   const continueToSubjects = () => {
@@ -73,6 +79,7 @@ export default function RegisterScreen() {
               </View>
             )}
           />
+          {submitError ? <Text style={styles.error}>{submitError}</Text> : null}
           <AppButton loading={formState.isSubmitting} onPress={onSubmit}>Continue</AppButton>
         </View>
       </Screen>
@@ -111,3 +118,4 @@ const styles = StyleSheet.create({
     marginTop: 12,
   },
 });
+

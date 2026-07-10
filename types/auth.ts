@@ -1,5 +1,6 @@
 export type StudentLevel = 'ordinary' | 'advanced' | 'competitive';
 export type LearningCategoryId = 'ordinary-physics' | 'advanced-physics' | 'competitive-physics';
+export type AppRole = 'student' | 'teacher_admin' | 'system_admin';
 
 export interface LearningCategory {
   id: LearningCategoryId;

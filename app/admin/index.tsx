@@ -19,12 +19,12 @@ export default function AdminIndexScreen() {
             <MaterialCommunityIcons name="shield-account-outline" size={44} color={theme.custom.colors.accent} />
             <Text variant="headlineSmall" style={styles.heroTitle}>Administration workspace</Text>
             <Text variant="bodyMedium" style={styles.heroText}>
-              Separate role-based pages for Teacher Admin and System Admin management.
+              Sign in with the role assigned to your Bright Lamda admin account.
             </Text>
           </View>
           <View style={styles.actions}>
-            <AppButton icon="account-tie-outline" onPress={() => router.push('/admin/teacher')}>Teacher Admin</AppButton>
-            <AppButton variant="outlined" icon="shield-crown-outline" onPress={() => router.push('/admin/system')}>System Admin</AppButton>
+            <AppButton icon="account-tie-outline" onPress={() => router.push('/admin/teacher-login')}>Teacher Admin Login</AppButton>
+            <AppButton variant="outlined" icon="shield-crown-outline" onPress={() => router.push('/admin/system-login')}>System Admin Login</AppButton>
           </View>
         </View>
       </Screen>
