@@ -8,11 +8,13 @@ import { healthRouter } from './health.routes.js';
 import { notificationRouter } from './notification.routes.js';
 import { quizRouter } from './quiz.routes.js';
 import { storageRouter } from './storage.routes.js';
+import { subjectRouter } from './subject.routes.js';
 
 export const apiRouter = Router();
 
 apiRouter.use('/health', healthRouter);
 apiRouter.use('/storage', storageRouter);
+apiRouter.use('/subjects', subjectRouter);
 apiRouter.use('/auth', authRouter);
 apiRouter.use('/admin', adminRouter);
 apiRouter.use('/ai', aiRouter);
@@ -20,6 +22,7 @@ apiRouter.use('/content', contentRouter);
 apiRouter.use('/notifications', notificationRouter);
 apiRouter.use('/quizzes', quizRouter);
 apiRouter.use('/forum', forumRouter);
+
 
 
 
